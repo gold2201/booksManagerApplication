@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookDao {
-    private final List<Book> books = List.of(
+    private final List<Book> books = List.of(// пока что имитируем бд
             new Book(1, "Война и мир", "Лев Толстой"),
             new Book(2, "Анна Каренина", "Лев Толстой"),
             new Book(3, "Преступление и наказание", "Федор Достоевский")

@@ -13,11 +13,11 @@ public class BookService {
         this.bookDao = bookDao;
     }
 
-    public List<Book> getBooksByAuthor(String author) {
+    public List<Book> getBooksByAuthor(String author) { // Передаём запрос в DAO для получения списка книг
         return bookDao.findByAuthor(author);
     }
 
-    public Book getBookById(int id) {
+    public Book getBookById(int id) { // Передаём запрос в DAO для получения книги
         return bookDao.findById(id);
     }
 }

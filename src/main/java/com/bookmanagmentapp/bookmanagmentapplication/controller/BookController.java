@@ -18,13 +18,13 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search") // Получаем параметр из запроса
     public List<Book> getBooksByAuthor(@RequestParam String author) {
         return bookService.getBooksByAuthor(author);
     }
 
-    @GetMapping("/{id}")
-    public Book getBookById(@PathVariable int id) {
+    @GetMapping("/{id}") // Получаем параметр из URL
+     public Book getBookById(@PathVariable int id) {
         return bookService.getBookById(id);
     }
 }
