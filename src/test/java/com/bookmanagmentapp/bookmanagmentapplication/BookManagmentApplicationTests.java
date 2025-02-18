@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BookManagmentApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void contextLoads() { // Пока что не используем тесты
 	}
 
 }
