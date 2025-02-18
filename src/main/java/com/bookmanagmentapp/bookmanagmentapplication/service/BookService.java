@@ -3,15 +3,14 @@ package com.bookmanagmentapp.bookmanagmentapplication.service;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookDao;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class BookService {
     private final BookDao bookDao;
-
-    public BookService(BookDao bookDao) {
-        this.bookDao = bookDao;
-    }
 
     public List<Book> getBooksByAuthor(String author) { // Передаём запрос в DAO для получения списка книг
         return bookDao.findByAuthor(author);

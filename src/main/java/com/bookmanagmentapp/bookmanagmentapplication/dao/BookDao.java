@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BookDao {
     private final List<Book> books = List.of(// пока что имитируем бд
-            new Book(1, "Война и мир", "Лев Толстой"),
-            new Book(2, "Анна Каренина", "Лев Толстой"),
-            new Book(3, "Преступление и наказание", "Федор Достоевский")
+            Book.builder().id(1).title("Война и мир").author("Лев Толстой").build(),
+            Book.builder().id(2).title("Анна Каренина").author("Лев Толстой").build(),
+            Book.builder().id(3).title("Преступление и наказание").author("Фёдор Достоевский").build()
     );
 
     public List<Book> findByAuthor(String author) {
