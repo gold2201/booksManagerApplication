@@ -1,5 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Author {
     private String name;
 
     @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Book> books = new HashSet<>();
 }
 

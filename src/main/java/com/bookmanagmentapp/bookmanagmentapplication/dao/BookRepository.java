@@ -7,13 +7,19 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    @EntityGraph(attributePaths = {"authors"}) // Жадная загрузка авторов
-    Optional<Book> findById(Long id);
+    @Override
+    @EntityGraph(attributePaths = {"authors"})
+    @NonNull
+    Optional<Book> findById(@NonNull Long id);
 
     @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.name = :authorName")
-    @EntityGraph(attributePaths = {"authors"}) // Жадная загрузка авторов
-    List<Book> findByAuthorName(@Param("authorName") String authorName);
+    @EntityGraph(attributePaths = {"authors"})
+    @NonNull
+    List<Book> findByAuthorName(@NonNull @Param("authorName") String authorName);
 }
 

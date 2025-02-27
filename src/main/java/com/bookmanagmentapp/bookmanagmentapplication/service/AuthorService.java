@@ -29,5 +29,13 @@ public class AuthorService {
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
     }
+
+    public List<Author> getAuthorsByBookTitle(String bookTitle) {
+        List<Author> authors = authorRepository.findAuthorsByBookTitle(bookTitle);
+        if (authors.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Авторы для книги не найдены");
+        }
+        return authors;
+    }
 }
 

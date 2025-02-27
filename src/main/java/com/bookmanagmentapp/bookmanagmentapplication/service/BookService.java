@@ -13,16 +13,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class BookService {
     private final BookRepository bookRepository;
 
-    /* public List<Book> getBooksByAuthor(String author) {
-        return bookRepository.findByAuthors_Name(author);
-    }*/
-
     public Book getBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга не найдена"));
     }
 
-    // Новый метод для получения книг по имени автора
     public List<Book> getBooksByAuthorName(String authorName) {
         List<Book> books = bookRepository.findByAuthorName(authorName);
         if (books.isEmpty()) {
