@@ -28,6 +28,11 @@ public class BookController {
         return bookService.getBooksByAuthorName(authorName);
     }
 
+    @GetMapping("/primary-author/{authorId}")
+    public List<Book> getBooksByPrimaryAuthor(@PathVariable Long authorId) {
+        return bookService.getBooksByPrimaryAuthor(authorId);
+    }
+
     @PostMapping
     public Book createBook(@RequestBody Book book) {
         return bookService.saveBook(book);

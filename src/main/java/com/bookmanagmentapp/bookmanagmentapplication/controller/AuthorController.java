@@ -40,8 +40,8 @@ public class AuthorController {
     }
 
     @GetMapping("/by-book")
-    public List<Author> getAuthorsByBookTitle(@RequestParam String title) {
-        return authorService.getAuthorsByBookTitle(title);
+    public List<Author> getAuthorsByBookTitle(@RequestParam String bookTitle) {
+        return authorService.getAuthorsByBookTitle(bookTitle);
     }
 }
 

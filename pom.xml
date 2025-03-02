@@ -72,7 +72,6 @@
 			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 
-
 	</dependencies>
 
 	<build>
