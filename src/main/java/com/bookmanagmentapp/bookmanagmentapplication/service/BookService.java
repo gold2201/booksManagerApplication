@@ -24,9 +24,11 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
+    private static final String BOOK_NOT_FOUND = "Книга не найдена";
+
     public Book getBookById(Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга отсутствует"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
     }
 
     public List<Book> getBooksByAuthorName(String authorName) {
@@ -69,7 +71,7 @@ public class BookService {
     @Transactional
     public Book updatePrimaryAuthor(Long id, BookPrimaryAuthorUpdateDto dto) {
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга не найдена"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
         Author primaryAuthor = authorRepository.findByName(dto.getPrimaryAuthorName())
                 .orElseGet(() -> authorRepository.save(new Author(dto.getPrimaryAuthorName())));
         existingBook.setPrimaryAuthor(primaryAuthor);
@@ -79,7 +81,7 @@ public class BookService {
     @Transactional
     public Book updateCoauthors(Long id, BookCoauthorsUpdateDto dto) {
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга не найдена"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
         Set<Author> newCoauthors = dto.getCoauthorNames().stream()
                 .map(name -> authorRepository.findByName(name)
                         .orElseGet(() -> authorRepository.save(new Author(name))))
@@ -91,7 +93,7 @@ public class BookService {
     @Transactional
     public Book updateBookTitle(Long id, BookTitleUpdateDto dto) {
         Book existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга не найдена"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
         existingBook.setTitle(dto.getTitle());
         return bookRepository.save(existingBook);
     }
