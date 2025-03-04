@@ -38,25 +38,17 @@ public class AuthorService {
 
     @Transactional
     public void deleteAuthor(Long id) {
-        // Найдем автора
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Автор не найден"));
 
-        // Для книг, где автор является основным, сбросим primaryAuthor (установим в null)
-        // Предполагаем, что у автора есть коллекция primaryBooks
         for (Book book : author.getPrimaryBooks()) {
             book.setPrimaryAuthor(null);
-            //  можно сохранить книгу, но если каскад настроен, Hibernate сделает это автоматически.
         }
 
-        // Для Many-to-Many связи удаляем автора из списка соавторов у каждой книги
         for (Book book : author.getBooks()) {
             book.getAuthors().remove(author);
-            // При необходимости сохранить книгу:
-            // bookRepository.save(book);
         }
 
-        // Теперь можно удалить автора
         authorRepository.delete(author);
     }
 }
