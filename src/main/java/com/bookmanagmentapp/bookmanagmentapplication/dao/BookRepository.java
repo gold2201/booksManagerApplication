@@ -1,5 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.dao;
 
+import com.bookmanagmentapp.bookmanagmentapplication.model.Author;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +26,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT b FROM Book b WHERE b.primaryAuthor.id = :authorId")
     @EntityGraph(attributePaths = {"primaryAuthor", "authors"})
     List<Book> findByPrimaryAuthor(@Param("authorId") Long authorId);
+
+    @Query("SELECT b.primaryAuthor FROM Book b WHERE b.title = :title")
+    Optional<Author> findPrimaryAuthorByBookTitle(@Param("title") String title);
 }
 
