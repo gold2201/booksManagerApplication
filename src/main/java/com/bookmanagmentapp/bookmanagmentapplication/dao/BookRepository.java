@@ -14,17 +14,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     @Override
-    @EntityGraph(attributePaths = {"primaryAuthor", "authors"})
+    @EntityGraph(attributePaths = {"primaryAuthor", "authors", "chapters"})
     @NonNull
     Optional<Book> findById(@NonNull Long id);
 
     @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.name = :authorName")
-    @EntityGraph(attributePaths = {"primaryAuthor", "authors"})
+    @EntityGraph(attributePaths = {"primaryAuthor", "authors", "chapters"})
     @NonNull
     List<Book> findByAuthorName(@NonNull @Param("authorName") String authorName);
 
     @Query("SELECT b FROM Book b WHERE b.primaryAuthor.id = :authorId")
-    @EntityGraph(attributePaths = {"primaryAuthor", "authors"})
+    @EntityGraph(attributePaths = {"primaryAuthor", "authors", "chapters"})
     List<Book> findByPrimaryAuthor(@Param("authorId") Long authorId);
 
     @Query("SELECT b.primaryAuthor FROM Book b WHERE b.title = :title")
