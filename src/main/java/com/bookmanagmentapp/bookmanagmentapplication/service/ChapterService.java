@@ -1,8 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.service;
 
-import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.ChapterRepository;
-import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Chapter;
 import java.util.List;
 import lombok.AllArgsConstructor;

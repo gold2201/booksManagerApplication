@@ -11,12 +11,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-    @EntityGraph(attributePaths = {"primaryBooks", "books"})
+    @EntityGraph(attributePaths = {"books"})
     Optional<Author> findByName(String name);
 
-    @Query("SELECT DISTINCT a FROM Author a " +
-            "LEFT JOIN a.books b " +
-            "LEFT JOIN a.primaryBooks pb " +
-            "WHERE b.title = :bookTitle OR pb.title = :bookTitle")
+    @Query(value = "SELECT DISTINCT a.* FROM author a " +
+            "LEFT JOIN book_author ba ON a.id = ba.author_id " +
+            "LEFT JOIN book b ON ba.book_id = b.id " +
+            "WHERE b.title = :bookTitle",
+            nativeQuery = true)
     List<Author> findAuthorsByBookTitle(@Param("bookTitle") String bookTitle);
 }

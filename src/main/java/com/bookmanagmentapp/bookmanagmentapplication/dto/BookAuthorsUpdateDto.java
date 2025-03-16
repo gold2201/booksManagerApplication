@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class BookCoauthorsUpdateDto {
-    private List<String> coauthorNames;
+public class BookAuthorsUpdateDto {
+    private String oldAuthorName;
+    private String newAuthorName;
 }

@@ -1,7 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.controller;
 
-import com.bookmanagmentapp.bookmanagmentapplication.dto.BookCoauthorsUpdateDto;
-import com.bookmanagmentapp.bookmanagmentapplication.dto.BookPrimaryAuthorUpdateDto;
+import com.bookmanagmentapp.bookmanagmentapplication.dto.BookAuthorsUpdateDto;
 import com.bookmanagmentapp.bookmanagmentapplication.dto.BookTitleUpdateDto;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import com.bookmanagmentapp.bookmanagmentapplication.service.BookService;
@@ -22,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    @GetMapping
+    public List<Book> getAllBooks() {
+        return bookService.getAllBooks();
+    }
+
     @GetMapping("/{id}")
     public Book getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
@@ -32,24 +36,14 @@ public class BookController {
         return bookService.getBooksByAuthorName(authorName);
     }
 
-    @GetMapping("/show-book/primary-author/{authorId}")
-    public List<Book> getBooksByPrimaryAuthor(@PathVariable Long authorId) {
-        return bookService.getBooksByPrimaryAuthor(authorId);
-    }
-
     @PostMapping("/create-book")
     public Book createBook(@RequestBody Book book) {
         return bookService.saveBook(book);
     }
 
-    @PutMapping("/rename-primary-author/{id}")
-    public Book updatePrimaryAuthor(@PathVariable Long id, @RequestBody BookPrimaryAuthorUpdateDto dto) {
-        return bookService.updatePrimaryAuthor(id, dto);
-    }
-
-    @PutMapping("/rename-coauthors/{id}")
-    public Book updateCoauthors(@PathVariable Long id, @RequestBody BookCoauthorsUpdateDto dto) {
-        return bookService.updateCoauthors(id, dto);
+    @PutMapping("/rename-author/{id}")
+    public Book updateAuthors(@PathVariable Long id, @RequestBody BookAuthorsUpdateDto dto) {
+        return bookService.updateAuthor(id, dto.getOldAuthorName(), dto.getNewAuthorName());
     }
 
     @PutMapping("/rename-title/{id}")
@@ -57,7 +51,7 @@ public class BookController {
         return bookService.updateBookTitle(id, dto);
     }
 
-    @DeleteMapping("/delete-book/{id}")
+    @DeleteMapping("{id}")
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
     }

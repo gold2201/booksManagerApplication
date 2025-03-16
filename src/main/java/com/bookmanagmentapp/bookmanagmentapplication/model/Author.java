@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -22,18 +21,14 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"primaryBooks", "books"})
-@EqualsAndHashCode(exclude = {"primaryBooks", "books"})
+@ToString(exclude = "books")
+@EqualsAndHashCode(exclude = "books")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "primaryAuthor", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<Book> primaryBooks = new HashSet<>();
 
     @ManyToMany(mappedBy = "authors", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
