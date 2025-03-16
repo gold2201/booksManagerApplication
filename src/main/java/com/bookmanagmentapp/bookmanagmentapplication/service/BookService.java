@@ -12,6 +12,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +24,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final InMemoryCache<String, List<Book>> cache;
+    private final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     private static final String BOOK_NOT_FOUND = "Книга не найдена";
 
@@ -37,11 +40,11 @@ public class BookService {
     public List<Book> getBooksByAuthorName(String authorName) {
         List<Book> cachedBooks = cache.get(authorName);
         if (cachedBooks != null) {
-            System.out.println("✅ Данные получены из кэша: " + authorName);
+            logger.info("✅ Данные получены из кэша: {}", authorName);
             return cachedBooks;
         }
 
-        System.out.println("⏳ Данные не найдены в кэше, идем в БД: " + authorName);
+        logger.info("⏳ Данные не найдены в кэше, идем в БД: {}", authorName);
         List<Book> books = bookRepository.findByAuthorName(authorName);
 
         if (books.isEmpty()) {
@@ -49,7 +52,7 @@ public class BookService {
         }
 
         cache.put(authorName, books);
-        System.out.println("✅ Данные добавлены в кэш: " + authorName);
+        logger.info("✅ Данные добавлены в кэш: {}", authorName);
         return books;
     }
 

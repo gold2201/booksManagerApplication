@@ -15,7 +15,7 @@ public class InMemoryCache<K, V> {
     private final long ttlMillis; // Время жизни кэша в миллисекундах
 
     public InMemoryCache() {
-        this.ttlMillis = 5 * 60 * 1000; // 5 минут
+        this.ttlMillis = 300000; // 5 минут
     }
 
     public void put(K key, V value) {
