@@ -74,7 +74,7 @@ public class BookService {
     @Transactional
     public Book updateAuthor(Long bookId, String oldAuthorName, String newAuthorName) {
         Book existingBook = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Книга не найдена"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
 
         Author oldAuthor = authorRepository.findByName(oldAuthorName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Нет старого автора"));

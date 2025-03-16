@@ -32,11 +32,11 @@ public class AuthorService {
     public List<Author> getAuthorsByBookTitle(String bookTitle) {
         List<Author> cachedAuthors = cache.get(bookTitle);
         if (cachedAuthors != null) {
-            logger.info("✅ Данные получены из кэша: {}", bookTitle);
+            logger.info("✅ Данные для книги из кэша (bookTitle: [hidden])");
             return cachedAuthors;
         }
 
-        logger.info("⏳ Данные не найдены в кэше, идем в БД: {}", bookTitle);
+        logger.info("⏳ Данные не найдены в кэше, идем в БД (bookTitle: [hidden])");
         List<Author> authors = authorRepository.findAuthorsByBookTitle(bookTitle);
 
         if (authors.isEmpty()) {
@@ -44,7 +44,7 @@ public class AuthorService {
         }
 
         cache.put(bookTitle, authors);
-        logger.info("✅ Данные добавлены в кэш: {}", bookTitle);
+        logger.info("✅ Данные добавлены в кэш для книги (bookTitle: [hidden])");
         return authors;
     }
 
