@@ -1,6 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.controller;
 
-import com.bookmanagmentapp.bookmanagmentapplication.InMemoryCache;
+import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

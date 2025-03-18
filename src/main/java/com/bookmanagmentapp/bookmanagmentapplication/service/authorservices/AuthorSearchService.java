@@ -1,10 +1,8 @@
-package com.bookmanagmentapp.bookmanagmentapplication.service;
+package com.bookmanagmentapp.bookmanagmentapplication.service.authorservices;
 
-import com.bookmanagmentapp.bookmanagmentapplication.InMemoryCache;
+import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.AuthorRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Author;
-import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -15,10 +13,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
-public class AuthorService {
+public class AuthorSearchService {
     private final AuthorRepository authorRepository;
     private final InMemoryCache<String, List<Author>> cache;
-    private final Logger logger = LoggerFactory.getLogger(AuthorService.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthorSearchService.class);
 
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
@@ -46,22 +44,6 @@ public class AuthorService {
         cache.put(bookTitle, authors);
         logger.info("✅ Данные добавлены в кэш для книги (bookTitle: [hidden])");
         return authors;
-    }
-
-    public Author saveAuthor(Author author) {
-        return authorRepository.save(author);
-    }
-
-    @Transactional
-    public void deleteAuthor(Long id) {
-        Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Автор не найден"));
-
-        for (Book book : author.getBooks()) {
-            book.getAuthors().remove(author);
-        }
-
-        authorRepository.delete(author);
     }
 }
 
