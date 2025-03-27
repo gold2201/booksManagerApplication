@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/application.properties
+src/main/resources/logback-spring.xml
+logs
 
 ### STS ###
 .apt_generated

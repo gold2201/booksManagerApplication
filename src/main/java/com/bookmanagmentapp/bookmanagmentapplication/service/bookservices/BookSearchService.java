@@ -2,34 +2,35 @@ package com.bookmanagmentapp.bookmanagmentapplication.service.bookservices;
 
 import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
+import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @AllArgsConstructor
+@Validated
 public class BookSearchService {
     private final BookRepository bookRepository;
     private final InMemoryCache<String, List<Book>> cache;
     private final Logger logger = LoggerFactory.getLogger(BookSearchService.class);
 
-    private static final String BOOK_NOT_FOUND = "Книга не найдена";
-
-    public Book getBookById(Long id) {
+    public Book getBookById(@Min(1) Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, BOOK_NOT_FOUND));
+                .orElseThrow(() -> new BookNotFoundException("Книга с ID " + id + " не найдена"));
     }
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
-    public List<Book> getBooksByAuthorName(String authorName) {
+    public List<Book> getBooksByAuthorName(@NotBlank String authorName) {
         List<Book> cachedBooks = cache.get(authorName);
         if (cachedBooks != null) {
             logger.info("✅ Данные получены из кэша: (authorName: [hidden])");
@@ -40,7 +41,7 @@ public class BookSearchService {
         List<Book> books = bookRepository.findByAuthorName(authorName);
 
         if (books.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Книги по данному автору не найдены");
+            throw new BookNotFoundException("Книги по автору " + authorName + " не найдены");
         }
 
         cache.put(authorName, books);

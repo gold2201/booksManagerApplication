@@ -24,6 +24,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Override
     @EntityGraph(attributePaths = {"authors", "chapters"})
+    @NonNull
     List<Book> findAll();
 }
 
