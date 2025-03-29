@@ -9,23 +9,17 @@ import com.bookmanagmentapp.bookmanagmentapplication.exceptions.InvalidBookOpera
 import com.bookmanagmentapp.bookmanagmentapplication.model.Author;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @AllArgsConstructor
-@Validated
 public class UpdateBookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
-    // private static final String BOOK_NOT_FOUND = "Книга не найдена";
-
     @Transactional
-    public Book updateAuthor(Long bookId, @NotBlank String oldAuthorName, @NotBlank String newAuthorName) {
+    public Book updateAuthor(Long bookId, String oldAuthorName, String newAuthorName) {
         Book existingBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + bookId + " не найдена"));
 
@@ -46,7 +40,7 @@ public class UpdateBookService {
     }
 
     @Transactional
-    public Book updateBookTitle(Long id, @Valid BookTitleUpdateDto dto) {
+    public Book updateBookTitle(Long id, BookTitleUpdateDto dto) {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + id + " не найдена"));
 

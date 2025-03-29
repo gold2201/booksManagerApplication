@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class ChapterService {
     private final ChapterRepository chapterRepository;
 
-    public Chapter getChapterById(@Min(1) Long id) {
+    public Chapter getChapterById(Long id) {
         return chapterRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Глава не найдена"));
     }
@@ -28,7 +28,7 @@ public class ChapterService {
     }
 
     @Transactional
-    public Chapter updateChapter(@Min(1) Long id, @Valid Chapter updatedChapter) {
+    public Chapter updateChapter(Long id, Chapter updatedChapter) {
         Chapter existingChapter = chapterRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Глава не найдена"));
         existingChapter.setTitle(updatedChapter.getTitle());

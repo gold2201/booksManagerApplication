@@ -3,20 +3,16 @@ package com.bookmanagmentapp.bookmanagmentapplication.service.authorservices;
 import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.AuthorRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Author;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
-@Validated
 public class AuthorSearchService {
     private final AuthorRepository authorRepository;
     private final InMemoryCache<String, List<Author>> cache;
@@ -26,12 +22,12 @@ public class AuthorSearchService {
         return authorRepository.findAll();
     }
 
-    public Author getAuthorById(@Min(1) Long id) {
+    public Author getAuthorById(Long id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Автор не найден"));
     }
 
-    public List<Author> getAuthorsByBookTitle(@NotBlank String bookTitle) {
+    public List<Author> getAuthorsByBookTitle(String bookTitle) {
         List<Author> cachedAuthors = cache.get(bookTitle);
         if (cachedAuthors != null) {
             logger.info("✅ Данные для книги из кэша (bookTitle: [hidden])");

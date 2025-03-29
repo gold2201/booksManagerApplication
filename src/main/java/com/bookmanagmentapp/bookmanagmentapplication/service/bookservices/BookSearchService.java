@@ -4,24 +4,20 @@ import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 @Service
 @AllArgsConstructor
-@Validated
 public class BookSearchService {
     private final BookRepository bookRepository;
     private final InMemoryCache<String, List<Book>> cache;
     private final Logger logger = LoggerFactory.getLogger(BookSearchService.class);
 
-    public Book getBookById(@Min(1) Long id) {
+    public Book getBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + id + " не найдена"));
     }
@@ -30,7 +26,7 @@ public class BookSearchService {
         return bookRepository.findAll();
     }
 
-    public List<Book> getBooksByAuthorName(@NotBlank String authorName) {
+    public List<Book> getBooksByAuthorName(String authorName) {
         List<Book> cachedBooks = cache.get(authorName);
         if (cachedBooks != null) {
             logger.info("✅ Данные получены из кэша: (authorName: [hidden])");
