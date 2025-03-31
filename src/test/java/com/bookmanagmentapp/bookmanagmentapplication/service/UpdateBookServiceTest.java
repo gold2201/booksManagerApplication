@@ -50,19 +50,6 @@ class UpdateBookServiceTest {
         book.setAuthors(Set.of(oldAuthor));
     }
 
-    /* @Test
-    void updateAuthor_whenBookAndAuthorExist_shouldUpdateAuthor() {
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-        when(authorRepository.findByName("Old Author")).thenReturn(Optional.of(oldAuthor));
-        when(authorRepository.findByName("New Author")).thenReturn(Optional.of(newAuthor));
-        when(bookRepository.save(any(Book.class))).thenReturn(book);
-
-        Book updatedBook = updateBookService.updateAuthor(1L, "Old Author", "New Author");
-
-        assertTrue(updatedBook.getAuthors().contains(newAuthor));
-        assertFalse(updatedBook.getAuthors().contains(oldAuthor));
-    } */
-
     @Test
     void updateAuthor_whenBookNotFound_shouldThrowException() {
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
