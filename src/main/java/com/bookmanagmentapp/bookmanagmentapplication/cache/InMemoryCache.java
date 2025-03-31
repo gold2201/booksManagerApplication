@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InMemoryCache<K, V> {
-    private final int maxSize = 3;
+    static final int MAX_SIZE = 3;
     private final Map<K, V> cache;
     private final Map<K, Long> expirationTimes = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -19,10 +19,10 @@ public class InMemoryCache<K, V> {
     public InMemoryCache() {
         this.ttlMillis = 300000;
 
-        this.cache = new LinkedHashMap<>(maxSize, 0.75f, true) {
+        this.cache = new LinkedHashMap<>(MAX_SIZE, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                return size() > maxSize;
+                return size() > MAX_SIZE;
             }
         };
     }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,5 +34,11 @@ public class CreateDeleteController {
     @DeleteMapping("{id}")
     public void deleteBook(@PathVariable @Min(1) Long id) {
         createDeleteService.deleteBook(id);
+    }
+
+    @Operation(summary = "Создать несколько книг", description = "Создает несколько книг одним запросом")
+    @PostMapping("/create-books")
+    public List<Book> createBooks(@RequestBody @Valid List<Book> books) {
+        return createDeleteService.saveBooks(books);
     }
 }

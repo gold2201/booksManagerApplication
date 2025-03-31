@@ -9,7 +9,9 @@ import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -46,5 +48,12 @@ public class CreateDeleteService {
         inMemoryCache.remove(bookTitle);
 
         bookRepository.deleteById(id);
+    }
+
+    @Transactional
+    public List<Book> saveBooks(List<Book> books) {
+        return books.stream()
+                .map(this::saveBook) // Используем уже существующую логику сохранения
+                .collect(Collectors.toList());
     }
 }

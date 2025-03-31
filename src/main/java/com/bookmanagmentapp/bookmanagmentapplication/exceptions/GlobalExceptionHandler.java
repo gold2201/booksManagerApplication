@@ -14,6 +14,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    static final String ERROR_MESSAGE = "error";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -39,19 +41,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleBookNotFound(BookNotFoundException ex) {
         log.warn("⚠️ [BookNotFound] {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(ERROR_MESSAGE, ex.getMessage()));
     }
 
     @ExceptionHandler(AuthorNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleAuthorNotFound(AuthorNotFoundException ex) {
         log.warn("⚠️ [AuthorNotFound] {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(ERROR_MESSAGE, ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidBookOperationException.class)
     public ResponseEntity<Map<String, String>> handleInvalidOperation(InvalidBookOperationException ex) {
         log.warn("⚠️ [InvalidOperation] {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(ERROR_MESSAGE, ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -64,7 +66,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleNoResourceFound(NoResourceFoundException ex) {
         log.warn("⚠️ [404] Запрошенный ресурс не найден: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", "Запрашиваемый ресурс не найден"));
+                .body(Map.of(ERROR_MESSAGE, "Запрашиваемый ресурс не найден"));
     }
 }
 
