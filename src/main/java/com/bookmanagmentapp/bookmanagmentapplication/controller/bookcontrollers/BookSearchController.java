@@ -1,6 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.controller.bookcontrollers;
 
-import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
+import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.service.bookservices.BookSearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,22 +25,22 @@ public class BookSearchController {
 
     @Operation(summary = "Получить все книги", description = "Возвращает список всех книг из базы данных")
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookSearchService.getAllBooks();
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        return ResponseEntity.ok(bookSearchService.getAllBooks());
     }
 
     @Operation(summary = "Получить книгу по ID", description = "Возвращает книгу с указанным ID")
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable @Min(1) Long id) {
-        return bookSearchService.getBookById(id);
+    public ResponseEntity<BookDto> getBookById(@PathVariable @Min(1) Long id) {
+        return ResponseEntity.ok(bookSearchService.getBookById(id));
     }
 
     @Operation(summary = "Получить книги по имени автора",
             description = "Возвращает список книг, написанных автором с указанным именем")
-    @GetMapping("/show-book/author/{authorName}")
-    public List<Book> getBooksByAuthorName(@PathVariable @Size(min = 1,
-            message = "Имя автора не может быть пустым") String authorName) {
-        return bookSearchService.getBooksByAuthorName(authorName);
+    @GetMapping("/by-author/{authorName}")
+    public ResponseEntity<List<BookDto>> getBooksByAuthorName(
+            @PathVariable @Size(min = 1, message = "Имя автора не может быть пустым") String authorName) {
+        return ResponseEntity.ok(bookSearchService.getBooksByAuthorName(authorName));
     }
 }
 

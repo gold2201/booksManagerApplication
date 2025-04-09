@@ -2,8 +2,8 @@ package com.bookmanagmentapp.bookmanagmentapplication.service.bookservices;
 
 import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
+import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
-import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -14,27 +14,32 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class BookSearchService {
     private final BookRepository bookRepository;
-    private final InMemoryCache<String, List<Book>> cache;
+    private final InMemoryCache<String, List<BookDto>> cache;
     private final Logger logger = LoggerFactory.getLogger(BookSearchService.class);
 
-    public Book getBookById(Long id) {
+    public BookDto getBookById(Long id) {
         return bookRepository.findById(id)
+                .map(BookDto::fromEntity)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + id + " не найдена"));
     }
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookDto> getAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(BookDto::fromEntity)
+                .toList();
     }
 
-    public List<Book> getBooksByAuthorName(String authorName) {
-        List<Book> cachedBooks = cache.get(authorName);
+    public List<BookDto> getBooksByAuthorName(String authorName) {
+        List<BookDto> cachedBooks = cache.get(authorName);
         if (cachedBooks != null) {
             logger.info("✅ Данные получены из кэша: (authorName: [hidden])");
             return cachedBooks;
         }
 
         logger.info("⏳ Данные не найдены в кэше, идем в БД: (authorName: [hidden])");
-        List<Book> books = bookRepository.findByAuthorName(authorName);
+        List<BookDto> books = bookRepository.findByAuthorName(authorName).stream()
+                .map(BookDto::fromEntity)
+                .toList();
 
         if (books.isEmpty()) {
             throw new BookNotFoundException("Книги по автору " + authorName + " не найдены");

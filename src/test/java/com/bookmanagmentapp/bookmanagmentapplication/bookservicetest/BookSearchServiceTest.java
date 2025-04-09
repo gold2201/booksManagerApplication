@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.service;
+package com.bookmanagmentapp.bookmanagmentapplication.bookservicetest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,6 +10,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
+import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
 import com.bookmanagmentapp.bookmanagmentapplication.service.bookservices.BookSearchService;
@@ -48,7 +49,7 @@ class BookSearchServiceTest {
     void getBookById_whenBookExists_shouldReturnBook() {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-        Book foundBook = bookSearchService.getBookById(1L);
+        BookDto foundBook = bookSearchService.getBookById(1L);
 
         assertNotNull(foundBook);
         assertEquals(1L, foundBook.getId());
@@ -68,7 +69,7 @@ class BookSearchServiceTest {
     void getAllBooks_shouldReturnBookList() {
         when(bookRepository.findAll()).thenReturn(List.of(book));
 
-        List<Book> books = bookSearchService.getAllBooks();
+        List<BookDto> books = bookSearchService.getAllBooks();
 
         assertEquals(1, books.size());
         assertEquals("Test Book", books.get(0).getTitle());
@@ -78,7 +79,7 @@ class BookSearchServiceTest {
     void getBooksByAuthorName_whenCached_shouldReturnFromCache() {
         when(cache.get("Author Name")).thenReturn(List.of(book));
 
-        List<Book> books = bookSearchService.getBooksByAuthorName("Author Name");
+        List<BookDto> books = bookSearchService.getBooksByAuthorName("Author Name");
 
         assertEquals(1, books.size());
         verify(bookRepository, never()).findByAuthorName(any());
@@ -89,7 +90,7 @@ class BookSearchServiceTest {
         when(cache.get("Author Name")).thenReturn(null);
         when(bookRepository.findByAuthorName("Author Name")).thenReturn(List.of(book));
 
-        List<Book> books = bookSearchService.getBooksByAuthorName("Author Name");
+        List<BookDto> books = bookSearchService.getBooksByAuthorName("Author Name");
 
         assertEquals(1, books.size());
         verify(cache).put(eq("Author Name"), any());

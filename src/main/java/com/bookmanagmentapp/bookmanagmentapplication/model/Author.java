@@ -32,6 +32,7 @@ public class Author {
     @NotBlank(message = "Имя автора не может быть пустым")
     private String name;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "authors", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private Set<Book> books = new HashSet<>();

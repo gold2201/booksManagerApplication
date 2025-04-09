@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.service;
+package com.bookmanagmentapp.bookmanagmentapplication.bookservicetest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,13 +36,10 @@ class UpdateBookServiceTest {
     private UpdateBookService updateBookService;
 
     private Book book;
-    private Author oldAuthor;
-    private Author newAuthor;
 
     @BeforeEach
     void setUp() {
-        oldAuthor = new Author("Old Author");
-        newAuthor = new Author("New Author");
+        Author oldAuthor = new Author("Old Author");
 
         book = new Book();
         book.setId(1L);
@@ -79,7 +76,7 @@ class UpdateBookServiceTest {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-        Book updatedBook = updateBookService.updateBookTitle(1L, dto);
+        Book updatedBook = updateBookService.updateBookTitle(1L, dto).toEntity();
 
         assertEquals("New Title", updatedBook.getTitle());
     }

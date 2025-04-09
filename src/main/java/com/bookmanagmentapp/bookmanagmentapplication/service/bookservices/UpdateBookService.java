@@ -2,6 +2,7 @@ package com.bookmanagmentapp.bookmanagmentapplication.service.bookservices;
 
 import com.bookmanagmentapp.bookmanagmentapplication.dao.AuthorRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
+import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.dto.BookTitleUpdateDto;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.AuthorNotFoundException;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
@@ -19,7 +20,7 @@ public class UpdateBookService {
     private final AuthorRepository authorRepository;
 
     @Transactional
-    public Book updateAuthor(Long bookId, String oldAuthorName, String newAuthorName) {
+    public BookDto updateAuthor(Long bookId, String oldAuthorName, String newAuthorName) {
         Book existingBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + bookId + " не найдена"));
 
@@ -36,18 +37,22 @@ public class UpdateBookService {
         existingBook.getAuthors().remove(oldAuthor);
         existingBook.getAuthors().add(newAuthor);
 
-        return bookRepository.save(existingBook);
+        Book updatedBook = bookRepository.save(existingBook);
+        return BookDto.fromEntity(updatedBook);
     }
 
     @Transactional
-    public Book updateBookTitle(Long id, BookTitleUpdateDto dto) {
+    public BookDto updateBookTitle(Long id, BookTitleUpdateDto dto) {
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Книга с ID " + id + " не найдена"));
 
         if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
             throw new InvalidBookOperationException("Название книги не может быть пустым");
         }
+
         existingBook.setTitle(dto.getTitle());
-        return bookRepository.save(existingBook);
+        Book updatedBook = bookRepository.save(existingBook);
+
+        return BookDto.fromEntity(updatedBook);
     }
 }

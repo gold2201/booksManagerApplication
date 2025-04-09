@@ -36,6 +36,7 @@ public class Book {
     @NotBlank
     private String title;
 
+    @Builder.Default
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -44,6 +45,7 @@ public class Book {
     @Valid
     private Set<Author> authors = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
     @Valid

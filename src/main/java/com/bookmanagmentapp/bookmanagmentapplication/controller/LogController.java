@@ -3,7 +3,6 @@ package com.bookmanagmentapp.bookmanagmentapplication.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

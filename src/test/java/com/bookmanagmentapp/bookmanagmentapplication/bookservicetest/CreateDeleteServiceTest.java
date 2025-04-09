@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.service;
+package com.bookmanagmentapp.bookmanagmentapplication.bookservicetest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,30 +58,40 @@ class CreateDeleteServiceTest {
 
     @Test
     void saveBook_NewAuthor_ShouldSaveSuccessfully() {
+        // Если автора с данным именем нет в базе, возвращаем Optional.empty()
         when(authorRepository.findByName(author.getName())).thenReturn(Optional.empty());
+        // При сохранении нового автора возвращаем нашего автора
         when(authorRepository.save(any(Author.class))).thenReturn(author);
+        // При сохранении книги возвращаем нашу книгу
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
+        // Вызываем метод напрямую, передавая сущность Book (без преобразования через DTO)
         Book savedBook = createDeleteService.saveBook(book);
 
         assertNotNull(savedBook);
         assertEquals("Test Book", savedBook.getTitle());
+        // Ожидаем, что новый автор будет сохранён (1 раз)
         verify(authorRepository, times(1)).save(any(Author.class));
+        // И книга сохранена 1 раз
         verify(bookRepository, times(1)).save(any(Book.class));
     }
 
     @Test
     void saveBook_ExistingAuthor_ShouldUseExistingAuthor() {
+        // Если автор уже есть в базе, возвращаем его
         when(authorRepository.findByName(author.getName())).thenReturn(Optional.of(author));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
+        // Вызываем метод напрямую с сущностью Book
         Book savedBook = createDeleteService.saveBook(book);
 
         assertNotNull(savedBook);
         assertEquals("Test Book", savedBook.getTitle());
+        // Ожидаем, что метод сохранения автора не будет вызван, так как автор уже существует
         verify(authorRepository, never()).save(any(Author.class));
         verify(bookRepository, times(1)).save(any(Book.class));
     }
+
 
     @Test
     void deleteBook_BookExists_ShouldDeleteSuccessfully() {
