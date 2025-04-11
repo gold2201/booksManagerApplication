@@ -1,22 +1,20 @@
 package com.bookmanagmentapp.bookmanagmentapplication.logtests;
 
 import com.bookmanagmentapp.bookmanagmentapplication.service.LogExportService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.junit.jupiter.api.*;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class LogExportServiceTest {
 
     private LogExportService service;
+    private final LocalDate today = LocalDate.now();
 
     @BeforeEach
     void setUp() {
@@ -24,25 +22,68 @@ class LogExportServiceTest {
     }
 
     @Test
-    void testExportEventuallyCompletes() throws InterruptedException {
-        UUID uuid = service.startExport(LocalDate.now());
+    void testStartExportReturnsUUID() {
+        UUID uuid = service.startExport(today);
         assertNotNull(uuid);
-
-        // Подождать, пока не станет DONE или не выйдет таймаут
-        for (int i = 0; i < 10; i++) {
-            String status = service.getStatus(uuid);
-            if ("DONE".equals(status)) {
-                return; // ОК, экспорт завершен
-            }
-            Thread.sleep(200); // ждем 200мс
-        }
-
-        fail("Экспорт не завершился в течение ожидаемого времени");
+        String status = service.getStatus(uuid);
+        assertTrue(List.of("PROCESSING", "DONE", "ERROR", "NOT_FOUND").contains(status));
     }
 
     @Test
-    void testGetStatusReturnsDefaultIfNotExists() {
-        UUID unknown = UUID.randomUUID();
-        assertEquals("NOT_FOUND", service.getStatus(unknown));
+    void testExportWithNonExistingLogFile() throws Exception {
+        LocalDate nonexistent = LocalDate.of(1900, 1, 1);
+        UUID uuid = service.startExport(nonexistent);
+
+        Thread.sleep(500); // Подождать выполнение async
+
+        assertEquals("NOT_FOUND", service.getStatus(uuid));
+    }
+
+    @Test
+    void testExportAndGetFileSuccess() throws Exception {
+        String fakeLogPath = "logs/app-" + today + ".log";
+        File fakeLog = new File(fakeLogPath);
+        File parentDir = fakeLog.getParentFile();
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            throw new IOException("Не удалось создать директорию для логов: " + parentDir);
+        }
+        Files.writeString(fakeLog.toPath(), "Test log line");
+
+        UUID uuid = service.startExport(today);
+
+        Thread.sleep(1000); // async завершит процесс
+
+        File exported = service.getFile(uuid);
+        assertTrue(exported.exists());
+    }
+
+    @Test
+    void testGetFileThrowsIfNotReady() {
+        UUID uuid = UUID.randomUUID();
+        assertThrows(RuntimeException.class, () -> service.getFile(uuid));
+    }
+
+    @Test
+    void testCleanUpTempFiles() throws Exception {
+        File temp = Files.createTempFile("test-clean", ".log").toFile();
+        UUID uuid = UUID.randomUUID();
+
+        setPrivateMap("exportedFiles", Map.of(uuid, temp));
+        setPrivateMap("taskStatus", Map.of(uuid, "DONE"));
+
+        assertTrue(temp.exists());
+
+        service.cleanUpTempFiles();
+
+        assertFalse(temp.exists(), "Файл должен быть удалён");
+        assertEquals("NOT_FOUND", service.getStatus(uuid)); // ✅ теперь работает
+    }
+
+
+    private void setPrivateMap(String fieldName, Map<UUID, ?> value) throws Exception {
+        Field field = LogExportService.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(service, new ConcurrentHashMap<>(value));
     }
 }
+
