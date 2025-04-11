@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.bookManagmentApp</groupId>
 	<artifactId>bookmanagmentapplication</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>bookManagmentApplication</name>
 	<description>Progect for create a books manager application</description>
 	<url/>
@@ -32,7 +32,8 @@
 		<sonar.organization>gold2201</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.token>${env.SONAR_TOKEN}</sonar.token>
-		<sonar.coverage.exclusions> **/models/**/*, **/dto/**/*, **/controllers/**/*, **/exceptions/**/*, **/*Config*.java, **/GlobalExceptionHandler.java, **/mdc/**/*, **/Pagination.java, **/aspects/**/*, **/*Aspect.java </sonar.coverage.exclusions>
+		<sonar.coverage.exclusions> **/models/**/*, **/dto/**/*, **/controller/**/*, **/exceptions/**/*, **/GlobalExceptionHandler.java </sonar.coverage.exclusions>
+		<jacoco.agent>${settings.localRepository}/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=${project.build.directory}/jacoco.exec</jacoco.agent>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -91,13 +92,13 @@
 		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.13</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>org.jacoco.core</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.13</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -135,12 +136,13 @@
 				<version>3.0.0-M7</version>
 				<configuration>
 					<argLine>-javaagent:"${settings.localRepository}/org/mockito/mockito-core/5.14.2/mockito-core-5.14.2.jar"</argLine>
+					<argLine>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=${project.build.directory}/jacoco.exec</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.13</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -168,6 +170,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

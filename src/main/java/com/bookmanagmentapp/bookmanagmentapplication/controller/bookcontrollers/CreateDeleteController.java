@@ -42,15 +42,8 @@ public class CreateDeleteController {
     }
 
     @Operation(summary = "Создать несколько книг", description = "Создает несколько книг одним запросом")
-    @PostMapping("/create-multiple")
-    public ResponseEntity<List<BookDto>> createBooks(@RequestBody @Valid List<CreateBookDto> bookDtos) {
-        List<Book> booksToSave = bookDtos.stream()
-                .map(CreateBookDto::toEntity)
-                .toList();
-        List<Book> savedBooks = createDeleteService.saveBooks(booksToSave);
-        List<BookDto> response = savedBooks.stream()
-                .map(BookDto::fromEntity)
-                .toList();
-        return ResponseEntity.ok(response);
+    @PostMapping("/create-books")
+    public List<Book> createBooks(@RequestBody @Valid List<Book> books) {
+        return createDeleteService.saveBooks(books);
     }
 }

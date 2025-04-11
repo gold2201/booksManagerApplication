@@ -2,7 +2,6 @@ package com.bookmanagmentapp.bookmanagmentapplication.service;
 
 import com.bookmanagmentapp.bookmanagmentapplication.dao.ChapterRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Chapter;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.AllArgsConstructor;
