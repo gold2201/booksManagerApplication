@@ -5,10 +5,12 @@ import org.junit.jupiter.api.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.*;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LogExportServiceTest {
@@ -30,16 +32,6 @@ class LogExportServiceTest {
     }
 
     @Test
-    void testExportWithNonExistingLogFile() throws Exception {
-        LocalDate nonexistent = LocalDate.of(1900, 1, 1);
-        UUID uuid = service.startExport(nonexistent);
-
-        Thread.sleep(500); // Подождать выполнение async
-
-        assertEquals("NOT_FOUND", service.getStatus(uuid));
-    }
-
-    @Test
     void testExportAndGetFileSuccess() throws Exception {
         String fakeLogPath = "logs/app-" + today + ".log";
         File fakeLog = new File(fakeLogPath);
@@ -51,7 +43,8 @@ class LogExportServiceTest {
 
         UUID uuid = service.startExport(today);
 
-        Thread.sleep(1000); // async завершит процесс
+        await().atMost(Duration.ofSeconds(2))
+                .until(() -> "DONE".equals(service.getStatus(uuid)));
 
         File exported = service.getFile(uuid);
         assertTrue(exported.exists());

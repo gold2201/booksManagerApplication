@@ -1,5 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.service;
 
+import com.bookmanagmentapp.bookmanagmentapplication.exceptions.LogNotReadyException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public class LogExportService {
 
     public File getFile(UUID taskId) {
         if (!"DONE".equals(taskStatus.get(taskId))) {
-            throw new RuntimeException("Файл ещё не готов или не найден");
+            throw new LogNotReadyException("Файл ещё не готов или не найден");
         }
         return exportedFiles.get(taskId);
     }
@@ -66,7 +67,7 @@ public class LogExportService {
                     Files.delete(file.toPath());
                 }
             } catch (IOException e) {
-                System.err.println("⚠️ Ошибка удаления временного файла: " + file.getName());
+                log.warn("⚠️ Ошибка удаления временного файла {}: {}", file.getName(), e.getMessage());
             }
             taskStatus.remove(uuid);
         });
