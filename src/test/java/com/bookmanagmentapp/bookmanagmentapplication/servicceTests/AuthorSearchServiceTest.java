@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.authorservicetests;
+package com.bookmanagmentapp.bookmanagmentapplication.servicceTests;
 
 import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.AuthorRepository;

@@ -32,7 +32,7 @@
 		<sonar.organization>gold2201</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.token>${env.SONAR_TOKEN}</sonar.token>
-		<sonar.coverage.exclusions> **/models/**/*, **/dto/**/*, **/cache/**/*, **/controller/**/*, **/exceptions/**/*, **/GlobalExceptionHandler.java </sonar.coverage.exclusions>
+		<sonar.coverage.exclusions> **/models/**/*, **/dto/**/*, **/cache/**/*, **/interceptor/**/*, **/controller/**/*, **/exceptions/**/*, **/GlobalExceptionHandler.java, **/service/LogExportService.java </sonar.coverage.exclusions>
 		<jacoco.agent>${settings.localRepository}/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=${project.build.directory}/jacoco.exec</jacoco.agent>
 	</properties>
 	<dependencies>

@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.chapterservicetests;
+package com.bookmanagmentapp.bookmanagmentapplication.servicceTests;
 
 import com.bookmanagmentapp.bookmanagmentapplication.model.Chapter;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.ChapterRepository;

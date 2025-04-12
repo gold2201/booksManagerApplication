@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class LogExportController {
     private final LogExportService logExportService;
 
-    @Operation(summary = "Инициировать выгрузку логов по дате", description = "Возвращает UUID задачи")
     @PostMapping("/export")
-    public ResponseEntity<UUID> exportLogs(@RequestParam @DateTimeFormat(iso =
-            DateTimeFormat.ISO.DATE) LocalDate date) {
-        UUID taskId = logExportService.startExport(date);
-        return ResponseEntity.accepted().body(taskId);
+    public ResponseEntity<?> exportLogs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        try {
+            UUID taskId = logExportService.startExport(date);
+            return ResponseEntity.accepted().body(taskId);
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лог-файл за указанную дату не найден");
+        }
     }
 
     @Operation(summary = "Получить статус выгрузки логов")

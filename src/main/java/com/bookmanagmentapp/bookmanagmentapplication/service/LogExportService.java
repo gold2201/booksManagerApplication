@@ -1,7 +1,9 @@
 package com.bookmanagmentapp.bookmanagmentapplication.service;
 
+import com.bookmanagmentapp.bookmanagmentapplication.dto.LogExportAsyncHelper;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.LogNotReadyException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -19,19 +21,22 @@ import org.springframework.stereotype.Service;
 public class LogExportService {
     private final Map<UUID, String> taskStatus = new ConcurrentHashMap<>();
     private final Map<UUID, File> exportedFiles = new ConcurrentHashMap<>();
+    private final LogExportAsyncHelper asyncHelper;
 
-    public UUID startExport(LocalDate date) {
+    public UUID startExport(LocalDate date) throws FileNotFoundException {
+        String fileName = String.format("logs/app-%s.log", date);
+        File logFile = new File(fileName);
+        if (!logFile.exists()) {
+            throw new FileNotFoundException("Лог-файл за указанную дату не найден.");
+        }
+
         UUID taskId = UUID.randomUUID();
         taskStatus.put(taskId, "PROCESSING");
-        asyncExport(date, taskId); // вызов в том же потоке
+        asyncHelper.asyncExport(date, taskId);
         return taskId;
     }
 
-    public void asyncExport(LocalDate date, UUID taskId) {
-        processExport(taskId, date);
-    }
-
-    private void processExport(UUID taskId, LocalDate date) {
+    public void processExport(UUID taskId, LocalDate date) {
         try {
             String fileName = String.format("logs/app-%s.log", date);
             File logFile = new File(fileName);
@@ -45,6 +50,7 @@ public class LogExportService {
             exportedFiles.put(taskId, tempFile);
             taskStatus.put(taskId, "DONE");
         } catch (IOException e) {
+            log.error("Ошибка при экспорте логов: {}", e.getMessage(), e);
             taskStatus.put(taskId, "ERROR");
         }
     }
@@ -74,4 +80,5 @@ public class LogExportService {
         exportedFiles.clear();
     }
 }
+
 

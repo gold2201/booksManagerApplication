@@ -1,4 +1,4 @@
-package com.bookmanagmentapp.bookmanagmentapplication.bookservicetest;
+package com.bookmanagmentapp.bookmanagmentapplication.servicceTests.bookservicetest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
