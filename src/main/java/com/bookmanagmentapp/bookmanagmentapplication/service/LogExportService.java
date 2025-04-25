@@ -1,7 +1,6 @@
 package com.bookmanagmentapp.bookmanagmentapplication.service;
 
 import com.bookmanagmentapp.bookmanagmentapplication.dto.LogExportAsyncHelper;
-import com.bookmanagmentapp.bookmanagmentapplication.exceptions.LogNotReadyException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,11 @@ public class LogExportService {
 
     public void processExport(UUID taskId, LocalDate date) {
         try {
+            Thread.sleep(10000);
+
             String fileName = String.format("logs/app-%s.log", date);
             File logFile = new File(fileName);
+
             if (!logFile.exists()) {
                 taskStatus.put(taskId, "NOT_FOUND");
                 return;
@@ -47,11 +50,16 @@ public class LogExportService {
 
             File tempFile = Files.createTempFile("exported-log-", ".log").toFile();
             Files.copy(logFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
             exportedFiles.put(taskId, tempFile);
             taskStatus.put(taskId, "DONE");
         } catch (IOException e) {
             log.error("Ошибка при экспорте логов: {}", e.getMessage(), e);
             taskStatus.put(taskId, "ERROR");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            taskStatus.put(taskId, "ERROR");
+            log.error("Задача экспорта была прервана.", e);
         }
     }
 
@@ -59,11 +67,12 @@ public class LogExportService {
         return taskStatus.getOrDefault(taskId, "NOT_FOUND");
     }
 
-    public File getFile(UUID taskId) {
-        if (!"DONE".equals(taskStatus.get(taskId))) {
-            throw new LogNotReadyException("Файл ещё не готов или не найден");
+    public Optional<File> getFile(UUID taskId) {
+        String status = taskStatus.get(taskId);
+        if (!"DONE".equals(status)) {
+            return Optional.empty(); // лог еще не готов или в процессе
         }
-        return exportedFiles.get(taskId);
+        return Optional.ofNullable(exportedFiles.get(taskId));
     }
 
     public void cleanUpTempFiles() {

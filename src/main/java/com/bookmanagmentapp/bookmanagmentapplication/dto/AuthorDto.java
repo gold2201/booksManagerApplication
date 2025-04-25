@@ -19,6 +19,6 @@ public class AuthorDto {
     }
 
     public Author toEntity() {
-        return new Author(id, name, new HashSet<>()); // books пустой, чтобы избежать циклической зависимости
+        return new Author(id, name, new HashSet<>());
     }
 }

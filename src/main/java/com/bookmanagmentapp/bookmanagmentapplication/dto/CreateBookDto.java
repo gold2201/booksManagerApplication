@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class CreateBookDto {
     @NotBlank(message = "Название книги не может быть пустым")
     private String title;
@@ -20,12 +22,22 @@ public class CreateBookDto {
     @Valid
     private Set<AuthorDto> authors;
 
+    @Valid
+    private Set<ChapterDto> chapters = new HashSet<>();
+
+    @NotBlank(message = "Имя файла картинки не может быть пустым")
+    private String imageName;
+
     public Book toEntity() {
-        return new Book(
-                null,  // ID будет сгенерирован автоматически
-                title,
-                authors.stream().map(AuthorDto::toEntity).collect(Collectors.toSet()),
-                new HashSet<>()  // Пустой набор глав
-        );
+        return Book.builder()
+                .title(title)
+                .authors(authors.stream().map(AuthorDto::toEntity).collect(Collectors.toSet()))
+                .chapters(chapters != null ?
+                        chapters.stream().map(ChapterDto::toEntity).collect(Collectors.toSet())
+                        : new HashSet<>())
+                .imagePath(imageName)
+                .build();
     }
 }
+
+

@@ -1,6 +1,7 @@
 package com.bookmanagmentapp.bookmanagmentapplication.model;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -50,6 +51,9 @@ public class Book {
     @JoinColumn(name = "book_id")
     @Valid
     private Set<Chapter> chapters = new HashSet<>();
+
+    @Column(name = "image_path")
+    private String imagePath;
 }
 
 

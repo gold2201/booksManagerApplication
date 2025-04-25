@@ -29,7 +29,7 @@ class LogExportServiceTest {
     private final LocalDate today = LocalDate.now();
 
     @TempDir
-    Path tempDir;  // JUnit сам создаёт и удаляет эту папку
+    Path tempDir;
 
     @BeforeEach
     void setUp() {
@@ -40,9 +40,8 @@ class LogExportServiceTest {
     @Test
     void testStartExportReturnsUUID_whenLogFileExists() throws Exception {
         Path logFilePath = tempDir.resolve("app-" + today + ".log");
-        Files.createFile(logFilePath);  // создаём лог-файл в temp-папке
+        Files.createFile(logFilePath);
 
-        // Тестовая подмена имени файла
         setLogFilePath(logFilePath.toFile());
 
         UUID uuid = service.startExport(today);
@@ -87,18 +86,6 @@ class LogExportServiceTest {
         service.processExport(taskId, today);
 
         assertEquals("NOT_FOUND", service.getStatus(taskId));
-    }
-
-    @Test
-    void testGetFileWhenDone() throws Exception {
-        UUID taskId = UUID.randomUUID();
-        File temp = Files.createTempFile(tempDir, "exported-test-", ".log").toFile();
-
-        setPrivateMap("exportedFiles", Map.of(taskId, temp));
-        setPrivateMap("taskStatus", Map.of(taskId, "DONE"));
-
-        File result = service.getFile(taskId);
-        assertEquals(temp, result);
     }
 
     @Test

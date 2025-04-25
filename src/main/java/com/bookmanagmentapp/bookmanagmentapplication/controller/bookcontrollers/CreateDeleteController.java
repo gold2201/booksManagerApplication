@@ -30,6 +30,14 @@ public class CreateDeleteController {
     @Operation(summary = "Создать книгу", description = "Создает новую книгу с указанными данными")
     @PostMapping("/create")
     public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookDto bookDto) {
+        // Дополнительная валидация для title и authors
+        if (bookDto.getTitle() == null || bookDto.getTitle().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        if (bookDto.getAuthors() == null || bookDto.getAuthors().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         Book savedBook = createDeleteService.saveBook(bookDto.toEntity());
         return ResponseEntity.ok(BookDto.fromEntity(savedBook));
     }

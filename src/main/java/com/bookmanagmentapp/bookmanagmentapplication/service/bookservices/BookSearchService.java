@@ -1,6 +1,5 @@
 package com.bookmanagmentapp.bookmanagmentapplication.service.bookservices;
 
-import com.bookmanagmentapp.bookmanagmentapplication.cache.InMemoryCache;
 import com.bookmanagmentapp.bookmanagmentapplication.dao.BookRepository;
 import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class BookSearchService {
     private final BookRepository bookRepository;
-    private final InMemoryCache<String, List<BookDto>> cache;
     private final Logger logger = LoggerFactory.getLogger(BookSearchService.class);
 
     public BookDto getBookById(Long id) {
@@ -30,13 +28,8 @@ public class BookSearchService {
     }
 
     public List<BookDto> getBooksByAuthorName(String authorName) {
-        List<BookDto> cachedBooks = cache.get(authorName);
-        if (cachedBooks != null) {
-            logger.info("✅ Данные получены из кэша: (authorName: [hidden])");
-            return cachedBooks;
-        }
+        logger.info("⏳ Запрос к базе данных: поиск книг по автору (authorName: [hidden])");
 
-        logger.info("⏳ Данные не найдены в кэше, идем в БД: (authorName: [hidden])");
         List<BookDto> books = bookRepository.findByAuthorName(authorName).stream()
                 .map(BookDto::fromEntity)
                 .toList();
@@ -45,8 +38,7 @@ public class BookSearchService {
             throw new BookNotFoundException("Книги по автору " + authorName + " не найдены");
         }
 
-        cache.put(authorName, books);
-        logger.info("✅ Данные добавлены в кэш: (authorName: [hidden])");
+        logger.info("✅ Найдено {} книг(и) по автору: (authorName: [hidden])", books.size());
         return books;
     }
 }

@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorSearchController {
     private final AuthorSearchService authorSearchService;
 
-    @Operation(summary = "Получить всех авторов", description = "Возвращает список всех авторов")
+    /* @Operation(summary = "Получить всех авторов", description = "Возвращает список всех авторов")
     @ApiResponse(responseCode = "200", description = "Список авторов успешно получен")
     @GetMapping
     public List<Author> getAllAuthors() {
         return authorSearchService.getAllAuthors();
-    }
+    } */
 
     @Operation(summary = "Получить автора по ID", description = "Возвращает автора по указанному ID")
     @ApiResponse(responseCode = "200", description = "Автор найден")

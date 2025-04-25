@@ -1,0 +1,153 @@
+/* App.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Общие настройки для всего приложения */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ant-card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Основная обертка: хедер, контент, футер */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Шапка */
+.header {
+  display: flex;
+  align-items: center;
+  background: #001529;
+  padding: 0 20px;
+  height: 64px;
+}
+
+/* Логотип внутри шапки */
+.logo a {
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Контентная часть */
+.site-content {
+  flex: 1;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Внутренняя обертка для карточек и текстов */
+.content-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Футер */
+.footer {
+  text-align: center;
+  background: #001529;
+  color: white;
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+/* Специальный класс для выбора роли */
+.login-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px - 48px); /* минус хедер и футер */
+  padding: 20px;
+  background-color: #f0f2f5;
+}
+
+/* Карточка выбора роли */
+.login-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 400px;
+}
+
+.login-card h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.login-card .ant-btn {
+  font-size: 16px;
+}
+
+/* Описание сайта справа от формы входа */
+.site-description {
+  max-width: 500px;
+  color: #333;
+}
+
+.site-description h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.site-description p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.logo-link {
+  /* базовый цвет текста */
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  /* делаем текст прозрачным, чтобы поверх него играть градиентом */
+  background: linear-gradient(
+          90deg,
+          rgba(255,255,255,0.8) 0%,
+          rgba(0, 72, 255, 0.98) 50%,
+          rgba(255,255,255,0.8) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  50%  { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* При наведении — чуть сильнее подчеркнём и ускорим перелив */
+.logo-link:hover {
+  animation-duration: 1.5s;
+  text-decoration: underline;
+}
+
+
+
+

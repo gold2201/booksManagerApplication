@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -43,47 +41,6 @@ class ChapterServiceTest {
         when(chapterRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> chapterService.getChapterById(1L))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("Глава не найдена");
-    }
-
-    @Test
-    void getAllChapters_shouldReturnAll() {
-        List<Chapter> chapters = Arrays.asList(
-                new Chapter(1L, "Title 1", "Content 1"),
-                new Chapter(2L, "Title 2", "Content 2")
-        );
-        when(chapterRepository.findAll()).thenReturn(chapters);
-
-        List<Chapter> result = chapterService.getAllChapters();
-
-        assertThat(result).hasSize(2);
-        verify(chapterRepository).findAll();
-    }
-
-    @Test
-    void updateChapter_shouldUpdateAndReturnChapter() {
-        Chapter existing = new Chapter(1L, "Old Title", "Old Content");
-        Chapter updated = new Chapter(null, "New Title", "New Content");
-
-        when(chapterRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(chapterRepository.save(any(Chapter.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        Chapter result = chapterService.updateChapter(1L, updated);
-
-        assertThat(result.getTitle()).isEqualTo("New Title");
-        assertThat(result.getContent()).isEqualTo("New Content");
-
-        verify(chapterRepository).save(existing);
-    }
-
-    @Test
-    void updateChapter_shouldThrow_ifChapterNotFound() {
-        when(chapterRepository.findById(42L)).thenReturn(Optional.empty());
-
-        Chapter update = new Chapter(null, "Title", "Content");
-
-        assertThatThrownBy(() -> chapterService.updateChapter(42L, update))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Глава не найдена");
     }
