@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  book-db:
+    image: mysql:8.0
+    container_name: book-db
+    environment:
+      MYSQL_ROOT_PASSWORD: fgh123fgh
+      MYSQL_DATABASE: book_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - book-network
+
+  app:
+    build: .
+    container_name: book-app
+    depends_on:
+      - book-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://book-db:3306/book_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: fgh123fgh
+    ports:
+      - "8080:8080"
+    networks:
+      - book-network
+
+volumes:
+  mysql_data:
+
+networks:
+  book-network:
+
