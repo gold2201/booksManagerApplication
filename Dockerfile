@@ -9,4 +9,10 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# ОБЯЗАТЕЛЬНО указываем порт и слушаем на всех интерфейсах
+ENV SERVER_PORT=8080
+ENV JAVA_OPTS="-Dserver.port=8080 -Dserver.address=0.0.0.0"
+
+EXPOSE 8080
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
