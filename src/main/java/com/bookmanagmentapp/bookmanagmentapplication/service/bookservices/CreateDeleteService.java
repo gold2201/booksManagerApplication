@@ -7,6 +7,7 @@ import com.bookmanagmentapp.bookmanagmentapplication.dto.BookDto;
 import com.bookmanagmentapp.bookmanagmentapplication.exceptions.BookNotFoundException;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Author;
 import com.bookmanagmentapp.bookmanagmentapplication.model.Book;
+import com.bookmanagmentapp.bookmanagmentapplication.model.Chapter;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -26,6 +27,7 @@ public class CreateDeleteService {
 
     @Transactional
     public Book saveBook(Book book) {
+        // 1. Привязываем авторов, как у вас уже есть
         Set<Author> attachedAuthors = new LinkedHashSet<>();
         for (Author author : new HashSet<>(book.getAuthors())) {
             Author persistentAuthor = authorRepository.findByName(author.getName())
@@ -33,6 +35,13 @@ public class CreateDeleteService {
             attachedAuthors.add(persistentAuthor);
         }
         book.setAuthors(attachedAuthors);
+
+        // 2. Привязываем главы к книге
+        for (Chapter chapter : book.getChapters()) {
+            chapter.setBook(book);
+        }
+
+        // 3. Сохраняем книгу вместе с главами (cascade = ALL)
         return bookRepository.save(book);
     }
 
